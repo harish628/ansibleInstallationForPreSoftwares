@@ -39,4 +39,4 @@
 - name: Display Jenkins initial admin password
   debug:
     msg: "Jenkins initial admin password is {{ jenkins_initial_password.stdout }}"
-
+  ignore_errors: true
