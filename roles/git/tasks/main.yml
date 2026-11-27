@@ -1,0 +1,14 @@
+---
+- name: Install Git
+  yum:
+    name: git
+    state: present
+
+- name: Verify Git installation
+  command: git --version
+  register: git_version
+  changed_when: false
+
+- name: Display Git version
+  debug:
+    msg: "{{ git_version.stdout }}"

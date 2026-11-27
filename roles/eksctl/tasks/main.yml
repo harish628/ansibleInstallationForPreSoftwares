@@ -1,0 +1,30 @@
+
+---
+- name: Download eksctl archive
+  get_url:
+    url: "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_Linux_{{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}.tar.gz"
+    dest: /tmp/eksctl.tar.gz
+    mode: '0644'
+
+- name: Extract eksctl archive
+  unarchive:
+    src: /tmp/eksctl.tar.gz
+    dest: /tmp/
+    remote_src: yes
+
+- name: Install eksctl binary
+  copy:
+    src: /tmp/eksctl
+    dest: /usr/local/bin/eksctl
+    remote_src: yes
+    mode: '0755'
+
+- name: Verify eksctl installation
+  command: eksctl version
+  register: eksctl_version
+  changed_when: false
+
+- name: Display eksctl version
+  debug:
+    msg: "{{ eksctl_version.stdout }}"
+

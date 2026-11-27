@@ -1,0 +1,30 @@
+
+---
+- name: Download Helm archive
+  get_url:
+    url: https://get.helm.sh/helm-v3.17.3-linux-amd64.tar.gz
+    dest: /tmp/helm-linux-amd64.tar.gz
+    mode: '0644'
+
+- name: Extract Helm archive
+  unarchive:
+    src: /tmp/helm-linux-amd64.tar.gz
+    dest: /tmp/
+    remote_src: yes
+
+- name: Move Helm binary to /usr/local/bin
+  copy:
+    src: /tmp/linux-amd64/helm
+    dest: /usr/local/bin/helm
+    remote_src: yes
+    mode: '0755'
+
+- name: Verify Helm installation
+  command: helm version
+  register: helm_version
+  changed_when: false
+
+- name: Display Helm version
+  debug:
+    msg: "{{ helm_version.stdout }}"
+

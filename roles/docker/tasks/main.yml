@@ -1,0 +1,43 @@
+
+---
+- name: Install Docker
+  yum:
+    name: docker
+    state: present
+
+- name: Start and enable Docker
+  service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Create Docker CLI plugins directory
+  file:
+    path: /usr/local/lib/docker/cli-plugins
+    state: directory
+    mode: '0755'
+
+- name: Download Docker Compose plugin
+  get_url:
+    url: "https://github.com/docker/compose/releases/latest/download/docker-compose-linux-{{ 'aarch64' if ansible_architecture == 'aarch64' else 'x86_64' }}"
+    dest: /usr/local/lib/docker/cli-plugins/docker-compose
+    mode: '0755'
+
+- name: Verify Docker installation
+  command: docker --version
+  register: docker_version
+  changed_when: false
+
+- name: Verify Docker Compose installation
+  command: docker compose version
+  register: compose_version
+  changed_when: false
+
+- name: Display Docker version
+  debug:
+    msg: "{{ docker_version.stdout }}"
+
+- name: Display Docker Compose version
+  debug:
+    msg: "{{ compose_version.stdout }}"
+

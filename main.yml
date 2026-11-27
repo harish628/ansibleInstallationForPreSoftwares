@@ -1,0 +1,15 @@
+---
+- name: Install DevOps tools on localhost
+  hosts: local
+  become: yes
+
+  roles:
+    - java
+    - jenkins
+    - helm
+    - git
+    - awscli
+    - docker
+    #- terraform
+    - kops
+    - eksctl
