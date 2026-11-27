@@ -16,39 +16,41 @@
     state: directory
     mode: '0755'
 
-# Install Docker Compose
+- name: Set Docker architecture
+  set_fact:
+    docker_arch: "{{ 'aarch64' if ansible_architecture == 'aarch64' else 'x86_64' }}"
+
 - name: Download Docker Compose plugin
   get_url:
-    url: "https://github.com/docker/compose/releases/latest/download/docker-compose-linux-{{ 'aarch64' if ansible_architecture == 'aarch64' else 'x86_64 }}"
+    url: "https://github.com/docker/compose/releases/latest/download/docker-compose-linux-{{ docker_arch }}"
     dest: /usr/local/lib/docker/cli-plugins/docker-compose
     mode: '0755'
 
-# Install Docker Buildx
+- name: Set Buildx architecture
+  set_fact:
+    buildx_arch: "{{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}"
+
 - name: Download Docker Buildx plugin
   get_url:
-    url: "https://github.com/docker/buildx/releases/latest/download/buildx-linux-{{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}"
+    url: "https://github.com/docker/buildx/releases/latest/download/buildx-linux-{{ buildx_arch }}"
     dest: /usr/local/lib/docker/cli-plugins/docker-buildx
     mode: '0755'
 
-# Verify Docker
 - name: Verify Docker installation
   command: docker --version
   register: docker_version
   changed_when: false
 
-# Verify Compose
 - name: Verify Docker Compose installation
   command: docker compose version
   register: compose_version
   changed_when: false
 
-# Verify Buildx
 - name: Verify Docker Buildx installation
   command: docker buildx version
   register: buildx_version
   changed_when: false
 
-# Display versions
 - name: Display Docker version
   debug:
     msg: "{{ docker_version.stdout }}"
