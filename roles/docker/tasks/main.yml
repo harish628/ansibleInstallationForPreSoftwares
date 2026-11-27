@@ -26,16 +26,20 @@
     dest: /usr/local/lib/docker/cli-plugins/docker-compose
     mode: '0755'
 
+- name: Set Buildx version
+  set_fact:
+    buildx_version: "0.38.2"
+
 - name: Set Buildx architecture
   set_fact:
     buildx_arch: "{{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}"
 
 - name: Download Docker Buildx plugin
   get_url:
-    url: "https://github.com/docker/buildx/releases/latest/download/buildx-linux-{{ buildx_arch }}"
+    url: "https://github.com/docker/buildx/releases/download/v{{ buildx_version }}/buildx-v{{ buildx_version }}.linux-{{ buildx_arch }}"
     dest: /usr/local/lib/docker/cli-plugins/docker-buildx
     mode: '0755'
-
+    
 - name: Verify Docker installation
   command: docker --version
   register: docker_version
