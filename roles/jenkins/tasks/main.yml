@@ -35,6 +35,7 @@
   command: cat /var/lib/jenkins/secrets/initialAdminPassword
   register: jenkins_initial_password
   changed_when: false
+  ignore_errors: true
 
 - name: Display Jenkins initial admin password
   debug:
